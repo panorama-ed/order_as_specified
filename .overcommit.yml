@@ -1,0 +1,8 @@
+PreCommit:
+  # Disable Brakeman since this is not an app.
+  Brakeman:
+    enabled: false
+  RailsSchemaUpToDate:
+    enabled: false
+  Reek:
+    enabled: false
