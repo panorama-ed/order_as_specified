@@ -1,0 +1,12 @@
+language: ruby
+rvm:
+- 2.2.1
+script: bundle exec rspec
+addons:
+  code_climate:
+    repo_token: 781c439d68cbb928316deaec1c7136f98423e1db87238f99cbc95183de94df9e
+notifications:
+  email: false
+  hipchat:
+    rooms:
+      secure: pLL6WXsWnvigZNgcYYwr0el3AG3WbRXOV4zAoBx/pAD/y51/KOjWboUO5szOqIicdSBJTIY5el7wK4uUi5elseumjl1jvOQSG7izvCGzDekuJuOTj9f6MdLtigbIaWO5/NWtXw0/JGHDQJpB4HyOv1mGAjQ3Y6MKxMNv+RUsgRI=

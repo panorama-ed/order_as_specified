@@ -1,3 +1,5 @@
+[![Code Climate](https://codeclimate.com/github/panorama-ed/order_as_specified/badges/gpa.svg)](https://codeclimate.com/github/panorama-ed/order_as_specified) [![Test Coverage](https://codeclimate.com/github/panorama-ed/order_as_specified/badges/coverage.svg)](https://codeclimate.com/github/panorama-ed/order_as_specified) [![Build Status](https://travis-ci.org/panorama-ed/order_as_specified.svg)](https://travis-ci.org/panorama-ed/order_as_specified) [![Inline docs](http://inch-ci.org/github/panorama-ed/order_as_specified.png)](http://inch-ci.org/github/panorama-ed/order_as_specified) [![Gem Version](https://badge.fury.io/rb/order_as_specified.svg)](http://badge.fury.io/rb/order_as_specified)
+
 # OrderAsSpecified
 
 `OrderAsSpecified` adds the ability to query an `ActiveRecord` class for results
@@ -100,6 +102,10 @@ TestObject.order_as_specified(language: ["fr", "es"])
      #<TestObject id: 4, language: "en">
    ]>
 ```
+
+## Documentation
+
+We have documentation on [RubyDoc](http://www.rubydoc.info/github/panorama-ed/order_as_specified/master).
 
 ## Contributing
 
