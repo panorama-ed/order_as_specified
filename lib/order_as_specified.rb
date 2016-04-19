@@ -9,6 +9,7 @@ module OrderAsSpecified
   # @param hash [Hash] the ActiveRecord arguments hash
   # @return [ActiveRecord::Relation] the objects, ordered as specified
   def order_as_specified(hash)
+    distinct_on = hash.delete(:distinct_on)
     params = extract_params(hash)
 
     table = params[:table]
@@ -17,11 +18,17 @@ module OrderAsSpecified
     # We have to explicitly quote for now because SQL sanitization for ORDER BY
     # queries hasn't yet merged into Rails.
     # See: https://github.com/rails/rails/pull/13008
-    order_by = params[:values].map do |value|
-      "#{table}.#{attribute}='#{value}' DESC"
-    end.join(", ")
+    conditions = params[:values].map do |value|
+      "#{table}.#{attribute}='#{value}'"
+    end
 
-    order(order_by)
+    scope = order(conditions.map { |cond| "#{cond} DESC" }.join(", "))
+
+    if distinct_on
+      scope = scope.select("DISTINCT ON (#{conditions.join(', ')}) #{table}.*")
+    end
+
+    scope
   end
 
   private

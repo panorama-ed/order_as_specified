@@ -1,8 +1,11 @@
 language: ruby
 rvm:
 - 2.2.1
+before_script:
+  - psql -c 'create database order_as_specified_test;' -U postgres
 script: bundle exec rspec
 addons:
+  postgresql: "9.3"
   code_climate:
     repo_token: 781c439d68cbb928316deaec1c7136f98423e1db87238f99cbc95183de94df9e
 notifications:
