@@ -115,6 +115,11 @@ TestObject.order_as_specified(distinct_on: true, language: ["fr", "en"])
    ]>
 ```
 
+Note that if a `nil` value is passed in the ordering an error is raised, because
+databases do not have good or consistent support for ordering with `NULL` values
+in an arbitrary order, so we don't permit this behavior instead of allowing an
+unexpected result.
+
 ## Documentation
 
 We have documentation on [RubyDoc](http://www.rubydoc.info/github/panorama-ed/order_as_specified/master).
