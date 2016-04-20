@@ -1,4 +1,5 @@
 require "order_as_specified/version"
+require "order_as_specified/error"
 
 # This module adds the ability to query an ActiveRecord class for results from
 # the database in an arbitrary order, without having to store anything extra
@@ -16,9 +17,11 @@ module OrderAsSpecified
     attribute = params[:attribute]
 
     # We have to explicitly quote for now because SQL sanitization for ORDER BY
-    # queries hasn't yet merged into Rails.
+    # queries isn't in less current versions of Rails.
     # See: https://github.com/rails/rails/pull/13008
     conditions = params[:values].map do |value|
+      raise OrderAsSpecified::Error, "Cannot order by `nil`" if value.nil?
+
       "#{table}.#{attribute}='#{value}'"
     end
 
