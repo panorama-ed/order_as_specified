@@ -1,12 +1,11 @@
 require "codeclimate-test-reporter"
 CodeClimate::TestReporter.start
 
-# Connect to an in-memory database for ActiveRecord tests.
-require "temping"
-ActiveRecord::Base.
-  establish_connection(adapter: "sqlite3", database: ":memory:")
+require "active_record"
 
 require "order_as_specified"
+
+ActiveRecord::Base.configurations = YAML.load_file("spec/config/database.yml")
 
 RSpec.configure do |config|
   # These two settings work together to allow you to limit a spec run

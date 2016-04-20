@@ -1,0 +1,9 @@
+sqlite3_test:
+  adapter: sqlite3
+  database: ":memory:"
+  timeout: 500
+
+postgresql_test:
+  adapter: postgresql
+  database: order_as_specified_test
+  username: postgres
