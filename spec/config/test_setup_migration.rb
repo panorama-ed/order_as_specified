@@ -1,6 +1,6 @@
 class TestSetupMigration < ActiveRecord::Migration
   def up
-    return if ActiveRecord::Base.connection.table_exists? :test_classes
+    return if ActiveRecord::Base.connection.data_source_exists?(:test_classes)
 
     create_table :test_classes do |t|
       t.string :field
