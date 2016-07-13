@@ -9,6 +9,10 @@ addons:
   postgresql: "9.3"
   code_climate:
     repo_token: 781c439d68cbb928316deaec1c7136f98423e1db87238f99cbc95183de94df9e
+env:
+  matrix:
+    - AR_VERSION="~> 4.2.0"
+    - AR_VERSION="~> 5.0.0"
 notifications:
   email: false
   hipchat:
