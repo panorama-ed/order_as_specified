@@ -80,6 +80,38 @@ TestObject.
    ]>
 ```
 
+We can use chaining in this way to order by multiple attributes as well:
+
+```ruby
+TestObject.
+  order_as_specified(language: ["es", "en"]).
+  order_as_specified(id: [4, 3, 5]).
+  order(:updated_at)
+=> #<ActiveRecord::Relation [
+
+  # First is language "es"...
+     #<TestObject id: 1, language: "es", updated_at: "2016-08-01 08:22:00">,
+     #<TestObject id: 2, language: "es", updated_at: "2016-08-01 07:29:07">,
+
+  # Then language "en"...
+     #<TestObject id: 9, language: "en", updated_at: "2016-08-03 04:11:26">,
+     #<TestObject id: 8, language: "en", updated_at: "2016-08-04 18:52:14">,
+
+  # Then id 4...
+     #<TestObject id: 4, language: "fr", updated_at: "2016-08-01 12:59:33">,
+
+  # Then id 3...
+     #<TestObject id: 3, language: "ar", updated_at: "2016-08-02 19:41:44">,
+
+  # Then id 5...
+     #<TestObject id: 5, language: "ar", updated_at: "2016-08-02 22:12:52">,
+
+  # Then we order by :updated_at...
+     #<TestObject id: 7, language: "fr", updated_at: "2016-08-02 14:27:16">,
+     #<TestObject id: 6, language: "ar", updated_at: "2016-08-03 14:26:06">,
+   ]>
+```
+
 We can also use this when we want to sort by an attribute in another model:
 
 ```ruby
