@@ -90,11 +90,15 @@ TestObject.
 => #<ActiveRecord::Relation [
 
   # First is language "es"...
-     #<TestObject id: 1, language: "es", updated_at: "2016-08-01 08:22:00">,
+     #<TestObject id: 1, language: "es", updated_at: "2016-08-01 02:22:00">,
+
+    # Within the language, we order by :updated_at...
      #<TestObject id: 2, language: "es", updated_at: "2016-08-01 07:29:07">,
 
   # Then language "en"...
      #<TestObject id: 9, language: "en", updated_at: "2016-08-03 04:11:26">,
+
+    # Within the language, we order by :updated_at...
      #<TestObject id: 8, language: "en", updated_at: "2016-08-04 18:52:14">,
 
   # Then id 4...
