@@ -30,6 +30,24 @@ RSpec.shared_examples ".order_as_specified" do
         to eq [*shuffled_object_ids, omitted_object.id]
     end
 
+    context "when the order is chained with other orderings" do
+      subject do
+        TestClass.
+          order_as_specified(field: shuffled_object_fields.take(3)).
+          order(:id)
+      end
+
+      it "returns results in the given order by multiple fields" do
+        shuffled_objects # Build these objects first.
+        omitted_object # Build an object that isn't sorted in this list.
+        expect(subject.map(&:id)).to eq [
+          *shuffled_object_ids.take(3),
+          *shuffled_object_ids.drop(3).sort,
+          omitted_object.id
+        ]
+      end
+    end
+
     context "when the order includes nil" do
       let(:shuffled_objects) do
         5.times.map do |i|
