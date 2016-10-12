@@ -22,7 +22,8 @@ module OrderAsSpecified
     conditions = params[:values].map do |value|
       raise OrderAsSpecified::Error, "Cannot order by `nil`" if value.nil?
 
-      "#{table}.#{attribute}='#{value}'"
+      # Sanitize each value to reduce the risk of SQL injection.
+      "#{table}.#{attribute}=#{sanitize(value)}"
     end
 
     scope = order(conditions.map { |cond| "#{cond} DESC" }.join(", "))
