@@ -115,5 +115,16 @@ RSpec.shared_examples ".order_as_specified" do
       records = TestClass.order_as_specified(field: [bad_value]).to_a
       expect(records.count).to eq(2)
     end
+
+    it "quotes column and table names" do
+      table = "association_test_classes"
+      quoted_table = AssociationTestClass.connection.quote_table_name(table)
+
+      column = "id"
+      quoted_column = AssociationTestClass.connection.quote_column_name(column)
+
+      sql = TestClass.order_as_specified(table => { column => ["foo"] }).to_sql
+      expect(sql).to include("ORDER BY #{quoted_table}.#{quoted_column}")
+    end
   end
 end

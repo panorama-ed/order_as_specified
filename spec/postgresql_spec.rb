@@ -42,6 +42,17 @@ RSpec.describe "PostgreSQL" do
         record = TestClass.order_as_specified(distinct_on: true, field: [bad_value]).to_a.first
         expect(record).to_not respond_to(:hi)
       end
+
+      it "quotes column and table names" do
+        table = "association_test_classes"
+        quoted_table = AssociationTestClass.connection.quote_table_name(table)
+
+        column = "id"
+        quoted_column = AssociationTestClass.connection.quote_column_name(column)
+
+        sql = TestClass.order_as_specified(distinct_on: true, table => { column => ["foo"] }).to_sql
+        expect(sql).to include("DISTINCT ON (#{quoted_table}.#{quoted_column}")
+      end
     end
   end
 end
