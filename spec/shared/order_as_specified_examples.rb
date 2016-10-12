@@ -95,4 +95,25 @@ RSpec.shared_examples ".order_as_specified" do
         to eq [*shuffled_object_ids, omitted_object.id]
     end
   end
+
+  context "input safety" do
+    before(:each) do
+      2.times { |i| TestClass.create(field: "foo#{i}") }
+    end
+
+    it "sanitizes column values" do
+      # Verify that the result set includes two records when using good column value.
+      good_value = "foo"
+      records = TestClass.order_as_specified(field: [good_value]).to_a
+      expect(records.count).to eq(2)
+
+      # Attempt to inject a LIMIT clause into the query. If the SQL inputs are
+      # properly sanitized, it will be ignored and the returned result set will
+      # include two records. If not, the LIMIT clause will execute and the result
+      # set will include just one record.
+      bad_value = "' LIMIT 1 --"
+      records = TestClass.order_as_specified(field: [bad_value]).to_a
+      expect(records.count).to eq(2)
+    end
+  end
 end
