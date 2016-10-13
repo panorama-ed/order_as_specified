@@ -13,8 +13,8 @@ module OrderAsSpecified
     distinct_on = hash.delete(:distinct_on)
     params = extract_params(hash)
 
-    table = params[:table]
-    attribute = params[:attribute]
+    table = connection.quote_table_name(params[:table])
+    attribute = connection.quote_column_name(params[:attribute])
 
     # We have to explicitly quote for now because SQL sanitization for ORDER BY
     # queries isn't in less current versions of Rails.
@@ -22,7 +22,8 @@ module OrderAsSpecified
     conditions = params[:values].map do |value|
       raise OrderAsSpecified::Error, "Cannot order by `nil`" if value.nil?
 
-      "#{table}.#{attribute}='#{value}'"
+      # Sanitize each value to reduce the risk of SQL injection.
+      "#{table}.#{attribute}=#{sanitize(value)}"
     end
 
     scope = order(conditions.map { |cond| "#{cond} DESC" }.join(", "))
