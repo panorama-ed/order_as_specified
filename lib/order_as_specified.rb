@@ -19,11 +19,12 @@ module OrderAsSpecified
     # We have to explicitly quote for now because SQL sanitization for ORDER BY
     # queries isn't in less current versions of Rails.
     # See: https://github.com/rails/rails/pull/13008
+    db_connection = ActiveRecord::Base.connection
     conditions = params[:values].map do |value|
       raise OrderAsSpecified::Error, "Cannot order by `nil`" if value.nil?
 
       # Sanitize each value to reduce the risk of SQL injection.
-      "#{table}.#{attribute}=#{sanitize(value)}"
+      "#{table}.#{attribute}=#{db_connection.quote(value)}"
     end
 
     scope = order(conditions.map { |cond| "#{cond} DESC" }.join(", "))
