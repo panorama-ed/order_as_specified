@@ -1,6 +1,10 @@
-class TestSetupMigration < ActiveRecord::Migration
+VersionedMigration = ActiveRecord::Migration.try(:[], 5.0) || ActiveRecord::Migration
+
+class TestSetupMigration < VersionedMigration
   def up
-    return if ActiveRecord::Base.connection.data_source_exists?(:test_classes)
+    db_connection = ActiveRecord::Base.connection
+    return if db_connection.try(:table_exists?,:test_classes) || # AR 4.2
+              db_connection.try(:data_source_exists?,:test_classes) # AR > 5.0
 
     create_table :test_classes do |t|
       t.string :field

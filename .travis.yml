@@ -13,6 +13,7 @@ env:
   matrix:
     - AR_VERSION="~> 4.2.0"
     - AR_VERSION="~> 5.0.0"
+    - AR_VERSION="~> 5.1.0"
 notifications:
   email: false
   hipchat:
