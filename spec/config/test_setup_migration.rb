@@ -1,4 +1,4 @@
-class TestSetupMigration < ActiveRecord::Migration
+class TestSetupMigration < ActiveRecord::Migration[4.2]
   def up
     return if ActiveRecord::Base.connection.data_source_exists?(:test_classes)
 
