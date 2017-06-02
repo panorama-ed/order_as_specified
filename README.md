@@ -176,3 +176,4 @@ and conform to the Rubocop style specified.** We use
 
 `OrderAsSpecified` is released under the
 [MIT License](https://github.com/panorama-ed/order_as_specified/blob/master/LICENSE.txt).
+
