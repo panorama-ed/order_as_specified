@@ -1,3 +1,10 @@
+# 1.3
+
+This release adds support for ActiveRecord 5.1. Many thanks to
+[cohki0305](https://github.com/cohki0305) for identifying the issue,
+[Billy Ferguson](https://github.com/fergyfresh) for investigating it, and
+especially to [Alex Heeton](https://github.com/heeton) for fixing it.
+
 # 1.2
 
 This release contains an important change: `order_as_specified` is no longer
