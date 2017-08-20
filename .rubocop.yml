@@ -8,9 +8,6 @@ AccessorMethodName:
 Alias:
   Enabled: false
 
-AllCops:
-  RunRailsCops: true
-
 AmbiguousOperator:
   Enabled: false
 
@@ -75,7 +72,7 @@ Delegate:
 DeprecatedClassMethods:
   Enabled: false
 
-DeprecatedHashMethods:
+Style/PreferredHashMethods:
   Enabled: false
 
 Documentation:
@@ -202,6 +199,9 @@ Proc:
 RaiseArgs:
   Enabled: false
 
+Rails:
+  Enabled: true
+
 RedundantReturn:
   AllowMultipleReturnValues: true
 
@@ -235,7 +235,7 @@ Style/MultilineBlockChain:
 VariableInterpolation:
   Enabled: false
 
-TrailingComma:
+Style/TrailingCommaInLiteral:
   Enabled: false
 
 TrivialAccessors:
