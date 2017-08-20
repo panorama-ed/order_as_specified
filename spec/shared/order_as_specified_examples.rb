@@ -10,7 +10,7 @@ RSpec.shared_examples ".order_as_specified" do
   end
 
   let(:shuffled_objects) do
-    5.times.map { |i| TestClass.create(field: "Field #{i}") }.shuffle
+    Array.new(5) { |i| TestClass.create(field: "Field #{i}") }.shuffle
   end
   let(:shuffled_object_fields) { shuffled_objects.map(&:field) }
   let(:shuffled_object_ids) { shuffled_objects.map(&:id) }
@@ -50,7 +50,7 @@ RSpec.shared_examples ".order_as_specified" do
 
     context "when the order includes nil" do
       let(:shuffled_objects) do
-        5.times.map do |i|
+        Array.new(5) do |i|
           TestClass.create(field: (i == 0 ? nil : "Field #{i}"))
         end.shuffle
       end
