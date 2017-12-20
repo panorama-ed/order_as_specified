@@ -156,6 +156,18 @@ databases do not have good or consistent support for ordering with `NULL` values
 in an arbitrary order, so we don't permit this behavior instead of allowing an
 unexpected result.
 
+## Limitations
+
+Databases may have limitations on the underlying number of fields you can have
+in an `ORDER BY` clause. For example, in PostgreSQL if you pass in more than
+1664 list elements you'll [receive this error](https://github.com/panorama-ed/order_as_specified/issues/34):
+
+```ruby
+PG::ProgramLimitExceeded: ERROR: target lists can have at most 1664 entries
+```
+
+That's a database limitation that this gem cannot avoid, unfortunately.
+
 ## Documentation
 
 We have documentation on [RubyDoc](http://www.rubydoc.info/github/panorama-ed/order_as_specified/master).
