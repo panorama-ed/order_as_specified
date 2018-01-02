@@ -27,6 +27,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pg", ">= 0.18"
   spec.add_development_dependency "rspec", "~> 3.2"
   spec.add_development_dependency "rspec-rails", "~> 3.2"
-  spec.add_development_dependency "rubocop", "~> 0.29"
+  spec.add_development_dependency "rubocop", "~> 0.49"
   spec.add_development_dependency "sqlite3", ">= 1.3"
 end
