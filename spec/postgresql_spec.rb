@@ -21,8 +21,8 @@ RSpec.describe "PostgreSQL" do
     end
 
     let(:shuffled_objects) do
-      fields = 3.times.map { |i| "Field #{i}" } * 2
-      5.times.map { |i| TestClass.create(field: fields[i]) }.shuffle
+      fields = Array.new(3) { |i| "Field #{i}" } * 2
+      Array.new(5) { |i| TestClass.create(field: fields[i]) }.shuffle
     end
 
     it "returns distinct objects" do
