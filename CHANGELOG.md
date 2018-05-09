@@ -1,3 +1,10 @@
+# 1.4
+
+This release removes deprecation warnings for ActiveRecord 5.2 users, and drops
+support for ActiveRecord 4.x. Many thanks to
+[George Protacio-Karaszi](https://github.com/GeorgeKaraszi) for pointing out
+this issue!
+
 # 1.3
 
 This release adds support for ActiveRecord 5.1. Many thanks to
