@@ -1,4 +1,4 @@
-class AssociationTestClass < ActiveRecord::Base
+class AssociationTestClass < ApplicationRecord
   extend OrderAsSpecified
 
   belongs_to :test_class

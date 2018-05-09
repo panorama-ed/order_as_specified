@@ -27,10 +27,12 @@ module OrderAsSpecified
       "#{table}.#{attribute}=#{db_connection.quote(value)}"
     end
 
-    scope = order(conditions.map { |cond| "#{cond} DESC" }.join(", "))
+    scope = order(Arel.sql(conditions.map { |cond| "#{cond} DESC" }.join(", ")))
 
     if distinct_on
-      scope = scope.select("DISTINCT ON (#{conditions.join(', ')}) #{table}.*")
+      scope = scope.select(
+        Arel.sql("DISTINCT ON (#{conditions.join(', ')}) #{table}.*")
+      )
     end
 
     scope

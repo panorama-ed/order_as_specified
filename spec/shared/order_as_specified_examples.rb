@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require "support/application_record"
 require "support/test_class"
 require "support/association_test_class"
 
