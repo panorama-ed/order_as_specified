@@ -1,5 +1,6 @@
-# coding: utf-8
-lib = File.expand_path("../lib", __FILE__)
+# frozen_string_literal: true
+
+lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "order_as_specified/version"
 
@@ -21,12 +22,12 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "activerecord", ">= 5.0.0"
 
-  spec.add_development_dependency "bundler", "~> 1.7"
-  spec.add_development_dependency "codeclimate-test-reporter", "~> 0.4"
-  spec.add_development_dependency "overcommit", "~> 0.23"
-  spec.add_development_dependency "pg", ">= 0.18"
-  spec.add_development_dependency "rspec", "~> 3.2"
-  spec.add_development_dependency "rspec-rails", "~> 3.2"
-  spec.add_development_dependency "rubocop", "~> 0.49"
-  spec.add_development_dependency "sqlite3", ">= 1.3"
+  spec.add_development_dependency "bundler"
+  spec.add_development_dependency "codeclimate-test-reporter"
+  spec.add_development_dependency "pg"
+  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "rspec-rails"
+  spec.add_development_dependency "rubocop"
+  spec.add_development_dependency "rubocop-rspec-focused"
+  spec.add_development_dependency "sqlite3"
 end

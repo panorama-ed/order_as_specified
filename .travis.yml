@@ -4,7 +4,9 @@ rvm:
 - 2.5.1
 before_script:
   - psql -c 'create database order_as_specified_test;' -U postgres
-script: bundle exec rspec
+script:
+  - bundle exec rspec
+  - bundle exec rubocop
 addons:
   postgresql: "9.3"
   code_climate:

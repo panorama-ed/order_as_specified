@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AssociationTestClass < ApplicationRecord
   extend OrderAsSpecified
 

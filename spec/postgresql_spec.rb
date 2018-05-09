@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 require "shared/order_as_specified_examples"
 require "config/test_setup_migration"
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe "PostgreSQL" do
   before :all do
     ActiveRecord::Base.establish_connection(:postgresql_test)
@@ -21,8 +24,8 @@ RSpec.describe "PostgreSQL" do
     end
 
     let(:shuffled_objects) do
-      fields = 3.times.map { |i| "Field #{i}" } * 2
-      5.times.map { |i| TestClass.create(field: fields[i]) }.shuffle
+      fields = Array.new(3) { |i| "Field #{i}" } * 2
+      Array.new(5) { |i| TestClass.create(field: fields[i]) }.shuffle
     end
 
     it "returns distinct objects" do
@@ -33,13 +36,16 @@ RSpec.describe "PostgreSQL" do
       before(:each) { TestClass.create(field: "foo") }
 
       it "sanitizes column values" do
-        # Attempt to inject code to add a 'hi' field to each record. If the SQL inputs
-        # are properly sanitized, the code will be ignored and the returned model
-        # instances will not respond to #hi. If not, the code will execute and
-        # each of the returned model instances will have a #hi method to access the
-        # new field.
+        # Attempt to inject code to add a 'hi' field to each record. If the SQL
+        # inputs are properly sanitized, the code will be ignored and the
+        # returned model instances will not respond to #hi. If not, the code
+        # will execute and each of the returned model instances will have a #hi
+        #  method to access the new field.
         bad_value = "foo') field, 'hi'::varchar AS hi FROM test_classes --"
-        record = TestClass.order_as_specified(distinct_on: true, field: [bad_value]).to_a.first
+        record = TestClass.order_as_specified(
+          distinct_on: true,
+          field: [bad_value]
+        ).to_a.first
         expect(record).to_not respond_to(:hi)
       end
 
@@ -48,11 +54,17 @@ RSpec.describe "PostgreSQL" do
         quoted_table = AssociationTestClass.connection.quote_table_name(table)
 
         column = "id"
-        quoted_column = AssociationTestClass.connection.quote_column_name(column)
+        quoted_column = AssociationTestClass.
+                        connection.
+                        quote_column_name(column)
 
-        sql = TestClass.order_as_specified(distinct_on: true, table => { column => ["foo"] }).to_sql
+        sql = TestClass.order_as_specified(
+          distinct_on: true,
+          table => { column => ["foo"] }
+        ).to_sql
         expect(sql).to include("DISTINCT ON (#{quoted_table}.#{quoted_column}")
       end
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
