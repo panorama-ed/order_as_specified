@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
+if ENV["TRAVIS"] == "true"
+  require "simplecov"
+  SimpleCov.start
+  SimpleCov.start do
+    # Omit the spec directory from being counted in code coverage calculations.
+    add_filter "/spec/"
+  end
+end
 
 require "active_record"
 

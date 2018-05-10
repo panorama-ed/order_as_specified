@@ -4,9 +4,14 @@ rvm:
 - 2.5.1
 before_script:
   - psql -c 'create database order_as_specified_test;' -U postgres
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 script:
   - bundle exec rspec
   - bundle exec rubocop
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 addons:
   postgresql: "9.3"
   code_climate:
