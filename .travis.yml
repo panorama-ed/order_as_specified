@@ -8,8 +8,10 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
-  - bundle exec rspec
+  # The order of these matters; RSpec must be last for Code Climate's
+  # code coverage after_script to work.
   - bundle exec rubocop
+  - bundle exec rspec
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 addons:
