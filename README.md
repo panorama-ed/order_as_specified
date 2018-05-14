@@ -181,8 +181,7 @@ We have documentation on [RubyDoc](http://www.rubydoc.info/github/panorama-ed/or
 5. Create a new Pull Request
 
 **Make sure your changes have appropriate tests (`bundle exec rspec`)
-and conform to the Rubocop style specified.** We use
-[overcommit](https://github.com/causes/overcommit) to enforce good code.
+and conform to the Rubocop style specified.**
 
 ## License
 

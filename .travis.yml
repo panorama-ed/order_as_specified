@@ -1,19 +1,26 @@
 language: ruby
 rvm:
 - 2.2.5
-- 2.3.1
+- 2.5.1
 before_script:
   - psql -c 'create database order_as_specified_test;' -U postgres
-script: bundle exec rspec
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+script:
+  - bundle exec rspec
+  - bundle exec rubocop
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 addons:
   postgresql: "9.3"
   code_climate:
     repo_token: 781c439d68cbb928316deaec1c7136f98423e1db87238f99cbc95183de94df9e
 env:
   matrix:
-    - AR_VERSION="~> 4.2.0"
     - AR_VERSION="~> 5.0.0"
     - AR_VERSION="~> 5.1.0"
+    - AR_VERSION="~> 5.2.0"
 notifications:
   email: false
   hipchat:

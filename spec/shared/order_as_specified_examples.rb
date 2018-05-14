@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
+require "support/application_record"
 require "support/test_class"
 require "support/association_test_class"
 
+# rubocop:disable Metrics/BlockLength
 RSpec.shared_examples ".order_as_specified" do
   # Clean up after each test. This is a lot lighter for these few tests than
   # trying to wrangle with RSpec-Rails to get transactional tests to work.
@@ -10,7 +14,7 @@ RSpec.shared_examples ".order_as_specified" do
   end
 
   let(:shuffled_objects) do
-    5.times.map { |i| TestClass.create(field: "Field #{i}") }.shuffle
+    Array.new(5) { |i| TestClass.create(field: "Field #{i}") }.shuffle
   end
   let(:shuffled_object_fields) { shuffled_objects.map(&:field) }
   let(:shuffled_object_ids) { shuffled_objects.map(&:id) }
@@ -50,7 +54,7 @@ RSpec.shared_examples ".order_as_specified" do
 
     context "when the order includes nil" do
       let(:shuffled_objects) do
-        5.times.map do |i|
+        Array.new(5) do |i|
           TestClass.create(field: (i == 0 ? nil : "Field #{i}"))
         end.shuffle
       end
@@ -102,15 +106,16 @@ RSpec.shared_examples ".order_as_specified" do
     end
 
     it "sanitizes column values" do
-      # Verify that the result set includes two records when using good column value.
+      # Verify that the result set includes two records when using good column
+      # value.
       good_value = "foo"
       records = TestClass.order_as_specified(field: [good_value]).to_a
       expect(records.count).to eq(2)
 
       # Attempt to inject a LIMIT clause into the query. If the SQL inputs are
       # properly sanitized, it will be ignored and the returned result set will
-      # include two records. If not, the LIMIT clause will execute and the result
-      # set will include just one record.
+      # include two records. If not, the LIMIT clause will execute and the
+      # result set will include just one record.
       bad_value = "' LIMIT 1 --"
       records = TestClass.order_as_specified(field: [bad_value]).to_a
       expect(records.count).to eq(2)
@@ -128,3 +133,4 @@ RSpec.shared_examples ".order_as_specified" do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

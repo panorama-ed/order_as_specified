@@ -1,10 +1,11 @@
-VersionedMigration = ActiveRecord::Migration.try(:[], 5.0) || ActiveRecord::Migration
+# frozen_string_literal: true
+
+VersionedMigration = ActiveRecord::Migration[ActiveRecord::Migration.current_version] # rubocop:disable Metrics/LineLength
 
 class TestSetupMigration < VersionedMigration
   def up
     db_connection = ActiveRecord::Base.connection
-    return if db_connection.try(:table_exists?,:test_classes) || # AR 4.2
-              db_connection.try(:data_source_exists?,:test_classes) # AR > 5.0
+    return if db_connection.try(:data_source_exists?, :test_classes)
 
     create_table :test_classes do |t|
       t.string :field

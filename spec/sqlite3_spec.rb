@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 require "shared/order_as_specified_examples"
 require "config/test_setup_migration"

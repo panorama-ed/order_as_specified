@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "order_as_specified/version"
 require "order_as_specified/error"
 
@@ -5,7 +7,6 @@ require "order_as_specified/error"
 # the database in an arbitrary order, without having to store anything extra
 # in the database. Simply `extend` it into your class and then you can use the
 # `order_as_specified` class method.
-
 module OrderAsSpecified
   # @param hash [Hash] the ActiveRecord arguments hash
   # @return [ActiveRecord::Relation] the objects, ordered as specified
@@ -27,10 +28,12 @@ module OrderAsSpecified
       "#{table}.#{attribute}=#{db_connection.quote(value)}"
     end
 
-    scope = order(conditions.map { |cond| "#{cond} DESC" }.join(", "))
+    scope = order(Arel.sql(conditions.map { |cond| "#{cond} DESC" }.join(", ")))
 
     if distinct_on
-      scope = scope.select("DISTINCT ON (#{conditions.join(', ')}) #{table}.*")
+      scope = scope.select(
+        Arel.sql("DISTINCT ON (#{conditions.join(', ')}) #{table}.*")
+      )
     end
 
     scope
@@ -44,13 +47,13 @@ module OrderAsSpecified
   # @param table [String/Symbol] the name of the table, default: the class table
   # @param hash [Hash] the ActiveRecord-style arguments, such as:
   #   { other_objects: { id: [1, 5, 3] } }
-  def extract_params(table = table_name, hash)
+  def extract_params(hash, table = table_name)
     raise "Could not parse params" unless hash.size == 1
 
     key, val = hash.first
 
     if val.is_a? Hash
-      extract_params(key, hash[key])
+      extract_params(hash[key], key)
     else
       {
         table: table,
