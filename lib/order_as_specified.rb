@@ -13,6 +13,7 @@ module OrderAsSpecified
   def order_as_specified(hash)
     distinct_on = hash.delete(:distinct_on)
     params = extract_params(hash)
+    return all if params[:values].empty?
 
     table = connection.quote_table_name(params[:table])
     attribute = connection.quote_column_name(params[:attribute])
