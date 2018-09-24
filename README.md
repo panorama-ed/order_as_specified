@@ -26,7 +26,7 @@ TestObject.order_as_specified(language: ["es", "en", "fr"])
 
 Other gems like `ranked-model`, `acts_as_sortable`, etc. assume you want the
 same ordering each time, and store data to keep track of this in the database.
-They're great at what they do, but if your desired ordering changes, or if you
+They're great at what they do, but if you desired ordering changes, or if you
 don't always want an ordering, this gem is your friend.
 
 ## Installation
