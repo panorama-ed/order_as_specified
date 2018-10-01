@@ -1,3 +1,8 @@
+# 1.5
+
+This release improves performance by switching to use `CASE` statements. Huge
+thanks to [Yen-Nan (Maso) Lin](https://github.com/masolin) for this improvement!
+
 # 1.4
 
 This release removes deprecation warnings for ActiveRecord 5.2 users, and drops
