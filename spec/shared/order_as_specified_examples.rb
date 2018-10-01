@@ -65,6 +65,22 @@ RSpec.shared_examples ".order_as_specified" do
     end
   end
 
+  context "when the order is empty array" do
+    subject { TestClass.order_as_specified(field: []) }
+
+    let(:test_objects) do
+      Array.new(5) do |i|
+        TestClass.create(field: "Field #{i}")
+      end
+    end
+
+    it "keep the original order" do
+      test_objects # Build test objects
+      expect(subject.map(&:id)).
+        to eq test_objects.map(&:id)
+    end
+  end
+
   context "with another table name specified" do
     subject do
       TestClass.
@@ -129,7 +145,8 @@ RSpec.shared_examples ".order_as_specified" do
       quoted_column = AssociationTestClass.connection.quote_column_name(column)
 
       sql = TestClass.order_as_specified(table => { column => ["foo"] }).to_sql
-      expect(sql).to include("ORDER BY #{quoted_table}.#{quoted_column}")
+      pattern = "ORDER BY CASE WHEN #{quoted_table}.#{quoted_column}"
+      expect(sql).to include(pattern)
     end
   end
 end

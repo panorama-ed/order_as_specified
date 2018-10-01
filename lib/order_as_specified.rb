@@ -13,6 +13,7 @@ module OrderAsSpecified
   def order_as_specified(hash)
     distinct_on = hash.delete(:distinct_on)
     params = extract_params(hash)
+    return all if params[:values].empty?
 
     table = connection.quote_table_name(params[:table])
     attribute = connection.quote_column_name(params[:attribute])
@@ -28,11 +29,15 @@ module OrderAsSpecified
       "#{table}.#{attribute}=#{db_connection.quote(value)}"
     end
 
-    scope = order(Arel.sql(conditions.map { |cond| "#{cond} DESC" }.join(", ")))
+    when_queries = conditions.map.with_index do |cond, index|
+      "WHEN #{cond} THEN #{index}"
+    end
+    case_query = "CASE #{when_queries.join(' ')} ELSE #{conditions.size} END"
+    scope = order(Arel.sql("#{case_query} ASC"))
 
     if distinct_on
       scope = scope.select(
-        Arel.sql("DISTINCT ON (#{conditions.join(', ')}) #{table}.*")
+        Arel.sql("DISTINCT ON (#{case_query}) #{table}.*")
       )
     end
 
