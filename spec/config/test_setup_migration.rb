@@ -9,6 +9,7 @@ class TestSetupMigration < VersionedMigration
 
     create_table :test_classes do |t|
       t.string :field
+      t.integer :number_field
     end
 
     create_table :association_test_classes do |t|

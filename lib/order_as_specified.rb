@@ -18,15 +18,15 @@ module OrderAsSpecified
     table = connection.quote_table_name(params[:table])
     attribute = connection.quote_column_name(params[:attribute])
 
-    # We have to explicitly quote for now because SQL sanitization for ORDER BY
-    # queries isn't in less current versions of Rails.
-    # See: https://github.com/rails/rails/pull/13008
-    db_connection = ActiveRecord::Base.connection
     conditions = params[:values].map do |value|
       raise OrderAsSpecified::Error, "Cannot order by `nil`" if value.nil?
 
-      # Sanitize each value to reduce the risk of SQL injection.
-      "#{table}.#{attribute}=#{db_connection.quote(value)}"
+      if value.is_a? Range
+        "#{table}.#{attribute} BETWEEN #{quote(value.first)} AND #{quote(value.last)}"
+      else
+        # Sanitize each value to reduce the risk of SQL injection.
+        "#{table}.#{attribute}=#{quote(value)}"
+      end
     end
 
     when_queries = conditions.map.with_index do |cond, index|
@@ -66,5 +66,12 @@ module OrderAsSpecified
         values: val
       }
     end
+  end
+
+  def quote(value)
+    # We have to explicitly quote for now because SQL sanitization for ORDER BY
+    # queries isn't in less current versions of Rails.
+    # See: https://github.com/rails/rails/pull/13008
+    ActiveRecord::Base.connection.quote(value)
   end
 end
