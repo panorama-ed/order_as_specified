@@ -22,7 +22,7 @@ module OrderAsSpecified
       raise OrderAsSpecified::Error, "Cannot order by `nil`" if value.nil?
 
       if value.is_a? Range
-        "#{table}.#{attribute} BETWEEN #{quote(value.first)} AND #{quote(value.last)}"
+        range_clause("#{table}.#{attribute}", value)
       else
         # Sanitize each value to reduce the risk of SQL injection.
         "#{table}.#{attribute}=#{quote(value)}"
@@ -53,7 +53,7 @@ module OrderAsSpecified
   # @param hash [Hash] the ActiveRecord-style arguments, such as:
   #   { other_objects: { id: [1, 5, 3] } }
   def extract_params(hash, table = table_name)
-    raise "Could not parse params" unless hash.size == 1
+    raise OrderAsSpecified::Error, "Could not parse params" unless hash.size == 1
 
     key, val = hash.first
 
@@ -66,6 +66,13 @@ module OrderAsSpecified
         values: val
       }
     end
+  end
+
+  def range_clause(col, range)
+    raise OrderAsSpecified::Error, "Range needs to be increasing" if range.first >= range.last
+
+    op = range.exclude_end? ? "<" : "<="
+    "#{col} >= #{quote(range.first)} AND #{col} #{op} #{quote(range.last)}"
   end
 
   def quote(value)
