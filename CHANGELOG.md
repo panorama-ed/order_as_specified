@@ -1,3 +1,8 @@
+# Unreleased (`master`)
+
+- We are dropping official support for Ruby 2.3 and below, though they may
+  continue to work.
+
 # 1.5
 
 This release improves performance by switching to use `CASE` statements. Huge
