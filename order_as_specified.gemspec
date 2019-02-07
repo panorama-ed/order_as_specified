@@ -23,11 +23,10 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activerecord", ">= 5.0.0"
 
   spec.add_development_dependency "bundler"
+  spec.add_development_dependency "codecov"
+  spec.add_development_dependency "mysql2"
   spec.add_development_dependency "pg"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rspec-rails"
-  spec.add_development_dependency "rubocop"
-  spec.add_development_dependency "rubocop-rspec-focused"
-  spec.add_development_dependency "simplecov"
-  spec.add_development_dependency "sqlite3"
+  spec.add_development_dependency "sqlite3", "~> 1.3.13"
 end

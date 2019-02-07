@@ -1,28 +1,40 @@
 language: ruby
 rvm:
-- 2.2.5
-- 2.5.1
+- 2.6
+- 2.5
+- 2.4
+# We test up to the latest version of Ruby here, and test these Ruby versions
+# against all support ActiveRecord versions. One test will be "duplicated"
+# below when we calculate code coverage, but I don't know how to avoid that and
+# still test all combinations of Ruby and ActiveRecord.
 before_script:
-  - psql -c 'create database order_as_specified_test;' -U postgres
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
+- psql -c 'create database order_as_specified_test;' -U postgres
+- mysql -e 'CREATE DATABASE order_as_specified_test;'
 script:
-  - bundle exec rspec
-  - bundle exec rubocop
-after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
-addons:
-  postgresql: "9.3"
+- bundle exec rspec
+services:
+- mysql
+- postgresql
 env:
-  global:
-    CC_TEST_REPORTER_ID=781c439d68cbb928316deaec1c7136f98423e1db87238f99cbc95183de94df9e
   matrix:
-    - AR_VERSION="~> 5.0.0"
-    - AR_VERSION="~> 5.1.0"
+  - AR_VERSION="~> 5.2.0"
+  - AR_VERSION="~> 5.1.0"
+  - AR_VERSION="~> 5.0.0"
+matrix:
+  include:
+  - rvm: 2.6
+    script:
+    - bundle exec rspec
+    - gem install --no-document rubocop rubocop-rspec-focused && rubocop
+    after_script:
+    - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
+    env:
+    - CODE_COVERAGE=true
     - AR_VERSION="~> 5.2.0"
+branches:
+  only:
+  - master
 notifications:
   email: false
-  hipchat:
-    rooms:
-      secure: pLL6WXsWnvigZNgcYYwr0el3AG3WbRXOV4zAoBx/pAD/y51/KOjWboUO5szOqIicdSBJTIY5el7wK4uUi5elseumjl1jvOQSG7izvCGzDekuJuOTj9f6MdLtigbIaWO5/NWtXw0/JGHDQJpB4HyOv1mGAjQ3Y6MKxMNv+RUsgRI=
+  slack:
+    secure: lVaScxPymqeYlTh+KlprWDK+O18BkQTyNSBTfzsLFzWF3Dy+p1rp2aeh0AhuLVYQDrlmFZ7cDMZ1ZYDyV2Y6lLtt+4ii7rATagI8R9WUVYb90C97tu1M6v5tpIjoTEOLx9hGc66heyvq1hNCKXbTqsqmrD69FYdjuXnOfrIs6J4=

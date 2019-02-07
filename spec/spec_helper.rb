@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-if ENV["TRAVIS"] == "true"
+if ENV["TRAVIS"] == "true" && ENV["CODE_COVERAGE"] == "true"
   require "simplecov"
-  SimpleCov.start
+  require "codecov"
+  SimpleCov.formatter = SimpleCov::Formatter::Codecov
   SimpleCov.start do
     # Omit the spec directory from being counted in code coverage calculations.
     add_filter "/spec/"
