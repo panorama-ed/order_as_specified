@@ -4,7 +4,6 @@ require "support/application_record"
 require "support/test_class"
 require "support/association_test_class"
 
-# rubocop:disable Metrics/BlockLength
 RSpec.shared_examples ".order_as_specified" do
   # Clean up after each test. This is a lot lighter for these few tests than
   # trying to wrangle with RSpec-Rails to get transactional tests to work.
@@ -150,4 +149,3 @@ RSpec.shared_examples ".order_as_specified" do
     end
   end
 end
-# rubocop:enable Metrics/BlockLength

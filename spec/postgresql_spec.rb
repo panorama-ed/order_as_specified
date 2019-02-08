@@ -4,7 +4,6 @@ require "spec_helper"
 require "shared/order_as_specified_examples"
 require "config/test_setup_migration"
 
-# rubocop:disable Metrics/BlockLength
 RSpec.describe "PostgreSQL" do
   before :all do
     ActiveRecord::Base.establish_connection(:postgresql_test)
@@ -68,4 +67,3 @@ RSpec.describe "PostgreSQL" do
     end
   end
 end
-# rubocop:enable Metrics/BlockLength
