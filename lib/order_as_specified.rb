@@ -53,7 +53,9 @@ module OrderAsSpecified
   # @param hash [Hash] the ActiveRecord-style arguments, such as:
   #   { other_objects: { id: [1, 5, 3] } }
   def extract_params(hash, table = table_name)
-    raise OrderAsSpecified::Error, "Could not parse params" unless hash.size == 1
+    unless hash.size == 1
+      raise OrderAsSpecified::Error, "Could not parse params"
+    end
 
     key, val = hash.first
 
@@ -69,7 +71,9 @@ module OrderAsSpecified
   end
 
   def range_clause(col, range)
-    raise OrderAsSpecified::Error, "Range needs to be increasing" if range.first >= range.last
+    if range.first >= range.last
+      raise OrderAsSpecified::Error, "Range needs to be increasing"
+    end
 
     op = range.exclude_end? ? "<" : "<="
     "#{col} >= #{quote(range.first)} AND #{col} #{op} #{quote(range.last)}"
