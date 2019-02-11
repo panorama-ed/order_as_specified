@@ -81,6 +81,54 @@ RSpec.shared_examples ".order_as_specified" do
     end
   end
 
+  context "when the order is a range" do
+    subject do
+      TestClass.order_as_specified(number_field: ranges).order(:number_field)
+    end
+
+    let(:ranges) { [(3..4), (0..2)] }
+    let(:numbers) { [0, 1, 2, 3, 4] }
+
+    let!(:test_objects) do
+      numbers.each do |i|
+        TestClass.create(number_field: i)
+      end
+    end
+
+    it "sorts according to range" do
+      expect(subject.map(&:number_field)).to eq [
+        *numbers.drop(3),
+        *numbers.take(3)
+      ]
+    end
+
+    context "exclusive ranges" do
+      let(:numbers) { [0, 1, 2, 3, 4, 0.9, 1.5] }
+
+      let(:ranges) { [(1...2), (0...1), (2...5)] }
+
+      it "sorts according to range" do
+        expect(subject.map(&:number_field)).to eq [
+          1,
+          1.5,
+          0,
+          0.9,
+          2,
+          3,
+          4
+        ]
+      end
+    end
+
+    context "reverse ranges" do
+      let(:ranges) { [(5..0)] }
+
+      it "raises an error" do
+        expect { subject }.to raise_error(OrderAsSpecified::Error)
+      end
+    end
+  end
+
   context "with another table name specified" do
     subject do
       TestClass.
@@ -147,6 +195,14 @@ RSpec.shared_examples ".order_as_specified" do
       sql = TestClass.order_as_specified(table => { column => ["foo"] }).to_sql
       pattern = "ORDER BY CASE WHEN #{quoted_table}.#{quoted_column}"
       expect(sql).to include(pattern)
+    end
+  end
+
+  context "invalid hash input" do
+    subject { TestClass.order_as_specified({}) }
+
+    it "raises an error" do
+      expect { subject }.to raise_error(OrderAsSpecified::Error)
     end
   end
 end

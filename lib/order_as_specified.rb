@@ -18,15 +18,15 @@ module OrderAsSpecified
     table = connection.quote_table_name(params[:table])
     attribute = connection.quote_column_name(params[:attribute])
 
-    # We have to explicitly quote for now because SQL sanitization for ORDER BY
-    # queries isn't in less current versions of Rails.
-    # See: https://github.com/rails/rails/pull/13008
-    db_connection = ActiveRecord::Base.connection
     conditions = params[:values].map do |value|
       raise OrderAsSpecified::Error, "Cannot order by `nil`" if value.nil?
 
-      # Sanitize each value to reduce the risk of SQL injection.
-      "#{table}.#{attribute}=#{db_connection.quote(value)}"
+      if value.is_a? Range
+        range_clause("#{table}.#{attribute}", value)
+      else
+        # Sanitize each value to reduce the risk of SQL injection.
+        "#{table}.#{attribute}=#{quote(value)}"
+      end
     end
 
     when_queries = conditions.map.with_index do |cond, index|
@@ -53,7 +53,9 @@ module OrderAsSpecified
   # @param hash [Hash] the ActiveRecord-style arguments, such as:
   #   { other_objects: { id: [1, 5, 3] } }
   def extract_params(hash, table = table_name)
-    raise "Could not parse params" unless hash.size == 1
+    unless hash.size == 1
+      raise OrderAsSpecified::Error, "Could not parse params"
+    end
 
     key, val = hash.first
 
@@ -66,5 +68,21 @@ module OrderAsSpecified
         values: val
       }
     end
+  end
+
+  def range_clause(col, range)
+    if range.first >= range.last
+      raise OrderAsSpecified::Error, "Range needs to be increasing"
+    end
+
+    op = range.exclude_end? ? "<" : "<="
+    "#{col} >= #{quote(range.first)} AND #{col} #{op} #{quote(range.last)}"
+  end
+
+  def quote(value)
+    # We have to explicitly quote for now because SQL sanitization for ORDER BY
+    # queries isn't in less current versions of Rails.
+    # See: https://github.com/rails/rails/pull/13008
+    ActiveRecord::Base.connection.quote(value)
   end
 end
