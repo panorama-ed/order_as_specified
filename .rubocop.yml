@@ -1,17 +1,5 @@
-require:
-  - rubocop/rspec/focused
+inherit_from:
+  - https://raw.githubusercontent.com/panorama-ed/code-conventions/master/rubocop.yml
 
 AllCops:
-  TargetRubyVersion: 2.3
-
-AbcSize:
-  Enabled: false
-
-DotPosition:
-  EnforcedStyle: trailing
-
-MethodLength:
-  Enabled: false
-
-StringLiterals:
-  EnforcedStyle: double_quotes
+  TargetRubyVersion: 2.4 # Keep this in sync with .travis.yml

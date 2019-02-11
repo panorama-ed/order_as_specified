@@ -2,7 +2,7 @@ language: ruby
 rvm:
 - 2.6
 - 2.5
-- 2.4
+- 2.4 # Keep this in sync with .rubocop.yml
 # We test up to the latest version of Ruby here, and test these Ruby versions
 # against all support ActiveRecord versions. One test will be "duplicated"
 # below when we calculate code coverage, but I don't know how to avoid that and
@@ -17,22 +17,23 @@ services:
 - postgresql
 env:
   matrix:
-  - AR_VERSION="~> 5.2.0"
-  - AR_VERSION="~> 5.1.0"
-  - AR_VERSION="~> 5.0.0"
+  - ACTIVERECORD_VERSION="~> 5.2.0"
+  - ACTIVERECORD_VERSION="~> 5.1.0"
+  - ACTIVERECORD_VERSION="~> 5.0.0"
 matrix:
   include:
   - rvm: 2.6
     script:
     - bundle exec rspec
     - gem install --no-document rubocop rubocop-rspec-focused && rubocop
-    after_script:
-    - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
     env:
     - CODE_COVERAGE=true
-    - AR_VERSION="~> 5.2.0"
+    - ACTIVERECORD_VERSION="~> 5.2.0"
 branches:
   only:
+  # We always run tests for PRs. This prevents running PR tests twice (once "for
+  # the PR" and once "for the branch"), though we do want tests to run always
+  # run on master.
   - master
 notifications:
   email: false
