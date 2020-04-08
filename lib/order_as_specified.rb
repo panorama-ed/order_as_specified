@@ -38,7 +38,7 @@ module OrderAsSpecified
     end
 
     node.else(node.conditions.size)
-    scope = order(table.grouping(node).asc)
+    scope = order(Arel::Nodes::Ascending.new(table.grouping(node)))
 
     if distinct_on
       distinct = Arel::Nodes::DistinctOn.new(node)
