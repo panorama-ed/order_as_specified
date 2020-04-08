@@ -61,8 +61,9 @@ RSpec.describe "PostgreSQL" do
           distinct_on: true,
           table => { column => ["foo"] }
         ).to_sql
-        pattern = "DISTINCT ON (CASE WHEN #{quoted_table}.#{quoted_column}"
-        expect(sql).to include(pattern)
+
+        pattern = /DISTINCT ON \(\s*CASE WHEN #{quoted_table}.#{quoted_column}/
+        expect(sql).to match(pattern)
       end
     end
   end
