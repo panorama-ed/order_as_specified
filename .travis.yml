@@ -25,7 +25,7 @@ matrix:
   - rvm: 2.6
     script:
     - bundle exec rspec
-    - gem install --no-document rubocop rubocop-rspec-focused && rubocop
+    - bundle exec rubocop
     env:
     - CODE_COVERAGE=true
     - ACTIVERECORD_VERSION="~> 5.2.0"
