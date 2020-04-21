@@ -204,4 +204,27 @@ RSpec.shared_examples ".order_as_specified" do
       expect { subject }.to raise_error(OrderAsSpecified::Error)
     end
   end
+
+  context "case insensitive" do
+    subject do
+      TestClass.
+        order_as_specified(field: %w[abc def], case_insensitive: true).
+        pluck(TestClass.arel_table[:field].lower)
+    end
+
+    before :each do
+      TestClass.create!(
+        [
+          { field: "dEf" },
+          { field: "aBc" },
+          { field: "ABC" },
+          { field: "DEF" }
+        ]
+      )
+    end
+
+    it "orders in a case insensitive manner" do
+      expect(subject).to eq(%w[abc abc def def])
+    end
+  end
 end

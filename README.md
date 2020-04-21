@@ -142,6 +142,13 @@ TestObject.order_as_specified(language: ["fr", "es"])
    ]>
 ```
 
+Note that if a `nil` value is passed in the ordering an error is raised, because
+databases do not have good or consistent support for ordering with `NULL` values
+in an arbitrary order, so we don't permit this behavior instead of allowing an
+unexpected result.
+
+### `distinct_on`
+
 In databases that support it (such as PostgreSQL), you can also use an option to
 add a `DISTINCT ON` to your query when you would otherwise have duplicates:
 
@@ -154,10 +161,20 @@ TestObject.order_as_specified(distinct_on: true, language: ["fr", "en"])
    ]>
 ```
 
-Note that if a `nil` value is passed in the ordering an error is raised, because
-databases do not have good or consistent support for ordering with `NULL` values
-in an arbitrary order, so we don't permit this behavior instead of allowing an
-unexpected result.
+### `case_insensitive`
+
+If you want objects to come back in an order that is case-insensitive, you can
+pass the `case_insensitive: true` value to the `order_as_specified` call, as in:
+
+```ruby
+TestObject.order_as_specified(case_insensitive: true, language: ["fr", "en"])
+=> #<ActiveRecord::Relation [
+     #<TestObject language: "fr">
+     #<TestObject language: "FR">
+     #<TestObject language: "EN">
+     #<TestObject language: "en">
+   ]>
+```
 
 ## Limitations
 
