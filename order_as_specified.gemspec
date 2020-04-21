@@ -28,5 +28,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pg"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rspec-rails"
-  spec.add_development_dependency "sqlite3", "~> 1.3.13"
+
+  # Older versions of Rails locked in the SQLite3 version, so we have to
+  # explicitly specify the version here
+  sqlite3 = ENV["ACTIVERECORD_VERSION"] == "~> 5.0.0" ? "~> 1.3.13" : "~> 1.4"
+  spec.add_development_dependency "sqlite3", sqlite3
 end

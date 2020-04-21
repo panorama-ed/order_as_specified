@@ -12,33 +12,38 @@ module OrderAsSpecified
   # @return [ActiveRecord::Relation] the objects, ordered as specified
   def order_as_specified(hash)
     distinct_on = hash.delete(:distinct_on)
+
     params = extract_params(hash)
     return all if params[:values].empty?
 
-    table = connection.quote_table_name(params[:table])
-    attribute = connection.quote_column_name(params[:attribute])
+    table = Arel::Table.new(params[:table])
+    node = Arel::Nodes::Case.new
 
-    conditions = params[:values].map do |value|
+    params[:values].each_with_index do |value, index|
       raise OrderAsSpecified::Error, "Cannot order by `nil`" if value.nil?
 
-      if value.is_a? Range
-        range_clause("#{table}.#{attribute}", value)
-      else
-        # Sanitize each value to reduce the risk of SQL injection.
-        "#{table}.#{attribute}=#{quote(value)}"
-      end
+      attribute = table[params[:attribute]]
+      condition =
+        if value.is_a?(Range)
+          if value.first >= value.last
+            raise OrderAsSpecified::Error, "Range needs to be increasing"
+          end
+
+          attribute.in(value)
+        else
+          attribute.eq(value)
+        end
+
+      node.when(condition).then(index)
     end
 
-    when_queries = conditions.map.with_index do |cond, index|
-      "WHEN #{cond} THEN #{index}"
-    end
-    case_query = "CASE #{when_queries.join(' ')} ELSE #{conditions.size} END"
-    scope = order(Arel.sql("#{case_query} ASC"))
+    node.else(node.conditions.size)
+    scope = order(Arel::Nodes::Ascending.new(table.grouping(node)))
 
     if distinct_on
-      scope = scope.select(
-        Arel.sql("DISTINCT ON (#{case_query}) #{table}.*")
-      )
+      distinct = Arel::Nodes::DistinctOn.new(node)
+      table_alias = connection.quote_table_name(table.name)
+      scope = scope.select(Arel.sql("#{distinct.to_sql} #{table_alias}.*"))
     end
 
     scope
@@ -68,21 +73,5 @@ module OrderAsSpecified
         values: val
       }
     end
-  end
-
-  def range_clause(col, range)
-    if range.first >= range.last
-      raise OrderAsSpecified::Error, "Range needs to be increasing"
-    end
-
-    op = range.exclude_end? ? "<" : "<="
-    "#{col} >= #{quote(range.first)} AND #{col} #{op} #{quote(range.last)}"
-  end
-
-  def quote(value)
-    # We have to explicitly quote for now because SQL sanitization for ORDER BY
-    # queries isn't in less current versions of Rails.
-    # See: https://github.com/rails/rails/pull/13008
-    ActiveRecord::Base.connection.quote(value)
   end
 end

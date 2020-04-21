@@ -192,7 +192,7 @@ RSpec.shared_examples ".order_as_specified" do
       quoted_column = AssociationTestClass.connection.quote_column_name(column)
 
       sql = TestClass.order_as_specified(table => { column => ["foo"] }).to_sql
-      pattern = "ORDER BY CASE WHEN #{quoted_table}.#{quoted_column}"
+      pattern = "ORDER BY (CASE WHEN #{quoted_table}.#{quoted_column}"
       expect(sql).to include(pattern)
     end
   end
