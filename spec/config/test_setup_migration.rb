@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-VersionedMigration = ActiveRecord::Migration[ActiveRecord::Migration.current_version] # rubocop:disable Metrics/LineLength
+VersionedMigration = ActiveRecord::Migration[ActiveRecord::Migration.current_version] # rubocop:disable Layout/LineLength
 
 class TestSetupMigration < VersionedMigration
   def up
