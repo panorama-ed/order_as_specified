@@ -25,12 +25,7 @@ matrix:
   - rvm: 2.6
     script:
     - bundle exec rspec
-<<<<<<< HEAD
     - bundle exec rubocop
-=======
-    - gem install --no-document rubocop -v '= 0.72.0'
-    - gem install --no-document rubocop-performance rubocop-rails rubocop-rspec && rubocop
->>>>>>> 841d35b... Install specific rubocop version
     env:
     - CODE_COVERAGE=true
     - ACTIVERECORD_VERSION="~> 5.2.0"
