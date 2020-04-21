@@ -1,5 +1,14 @@
-inherit_from:
-  - https://raw.githubusercontent.com/panorama-ed/code-conventions/master/rubocop.yml
+inherit_gem:
+  panolint: rubocop.yml
 
 AllCops:
   TargetRubyVersion: 2.4 # Keep this in sync with .travis.yml
+
+RSpec/BeforeAfterAll:
+  Enabled: false
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/DescribeClass:
+  Enabled: false

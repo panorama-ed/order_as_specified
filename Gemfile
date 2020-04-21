@@ -2,8 +2,11 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in order_as_specified.gemspec
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
+
 gemspec
+
+gem "panolint", github: "panorama-ed/panolint"
 
 if ENV["TRAVIS"] == "true" && ENV["ACTIVERECORD_VERSION"]
   gem "activerecord", ENV["ACTIVERECORD_VERSION"]
