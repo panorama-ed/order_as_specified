@@ -12,6 +12,7 @@ module OrderAsSpecified
   # @return [ActiveRecord::Relation] the objects, ordered as specified
   def order_as_specified(hash)
     distinct_on = hash.delete(:distinct_on)
+    case_insensitive = hash.delete(:case_insensitive)
 
     params = extract_params(hash)
     return all if params[:values].empty?
@@ -30,6 +31,8 @@ module OrderAsSpecified
           end
 
           attribute.in(value)
+        elsif case_insensitive
+          attribute.matches(value)
         else
           attribute.eq(value)
         end
