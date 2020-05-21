@@ -25,7 +25,7 @@ jobs:
       - name: Remove QA Label
         uses: actions/github-script@0.4.0
         with:
-          github-token: ${{ secrets.PANORAMA_BOT_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.issues.removeLabel({
               issue_number: context.issue.number,

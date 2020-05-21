@@ -23,7 +23,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activerecord", ">= 5.0.0"
 
   spec.add_development_dependency "bundler"
-  spec.add_development_dependency "codecov"
   spec.add_development_dependency "mysql2"
   spec.add_development_dependency "pg"
   spec.add_development_dependency "rspec"

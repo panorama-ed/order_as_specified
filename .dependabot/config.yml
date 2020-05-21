@@ -44,4 +44,3 @@ update_configs:
     #       dependency_type: "all"
     #       dependency_name: "aws-sdk-s3"
     #       update_type: "semver:minor"
-

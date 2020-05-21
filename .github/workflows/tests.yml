@@ -1,0 +1,61 @@
+# based on https://github.com/ruby/setup-ruby/blob/master/README.md
+name: Tests
+on: [push, pull_request]
+jobs:
+  ci:
+    name: CI
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+        ruby: [ 2.5, 2.6, 2.7 ]
+    runs-on: ${{ matrix.os }}
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: order_as_specified_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      mysql:
+        image: mysql:latest
+        env:
+            MYSQL_USER: mysql
+            MYSQL_PASSWORD: mysql
+            MYSQL_ROOT_PASSWORD: mysql
+            MYSQL_DATABASE: order_as_specified_test
+        ports:
+            - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      CI: true
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+    - uses: actions/cache@v1
+      with:
+        path: vendor/bundle
+        key: bundle-use-ruby-${{ matrix.os }}-${{ matrix.ruby }}-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          bundle-use-ruby-${{ matrix.os }}-${{ matrix.ruby }}-
+    - run: sudo apt-get install libsqlite3-dev
+    - name: bundle install
+      run: |
+        ruby -v
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+    - run: bundle exec rubocop
+    - run: bundle exec rspec

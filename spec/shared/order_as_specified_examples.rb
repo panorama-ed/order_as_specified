@@ -101,7 +101,7 @@ RSpec.shared_examples ".order_as_specified" do
       ]
     end
 
-    context "exclusive ranges" do
+    context "when ranges are exclusive" do
       let(:numbers) { [0, 1, 2, 3, 4, 0.9, 1.5] }
 
       let(:ranges) { [(1...2), (0...1), (2...5)] }
@@ -119,7 +119,7 @@ RSpec.shared_examples ".order_as_specified" do
       end
     end
 
-    context "reverse ranges" do
+    context "when ranges are in reverse order" do
       let(:ranges) { [(5..0)] }
 
       it "raises an error" do
@@ -163,7 +163,7 @@ RSpec.shared_examples ".order_as_specified" do
     end
   end
 
-  context "input safety" do
+  describe "input safety" do
     before(:each) do
       2.times { |i| TestClass.create(field: "foo#{i}") }
     end
@@ -197,7 +197,7 @@ RSpec.shared_examples ".order_as_specified" do
     end
   end
 
-  context "invalid hash input" do
+  context "when hash input is invalid" do
     subject { TestClass.order_as_specified({}) }
 
     it "raises an error" do
@@ -205,7 +205,7 @@ RSpec.shared_examples ".order_as_specified" do
     end
   end
 
-  context "case insensitive" do
+  context "when case insensitive option is used" do
     subject do
       TestClass.
         order_as_specified(field: %w[abc def], case_insensitive: true).
