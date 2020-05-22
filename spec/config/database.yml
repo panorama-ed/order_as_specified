@@ -5,11 +5,15 @@ sqlite3_test:
 
 postgresql_test:
   adapter: postgresql
+  host: localhost
   database: order_as_specified_test
   username: postgres
+  password: postgres
 
 mysql_test:
   adapter: mysql2
-  database: order_as_specified_test
-  username: travis
+  host: 127.0.0.1
   encoding: utf8
+  database: order_as_specified_test
+  username: mysql
+  password: mysql

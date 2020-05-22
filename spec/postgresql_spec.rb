@@ -5,12 +5,12 @@ require "shared/order_as_specified_examples"
 require "config/test_setup_migration"
 
 RSpec.describe "PostgreSQL" do
-  before :all do
+  before :all do # rubocop:disable RSpec/BeforeAfterAll
     ActiveRecord::Base.establish_connection(:postgresql_test)
     TestSetupMigration.migrate(:up)
   end
 
-  after(:all) { ActiveRecord::Base.remove_connection }
+  after(:all) { ActiveRecord::Base.remove_connection } # rubocop:disable RSpec/BeforeAfterAll
 
   include_examples ".order_as_specified"
 
@@ -31,7 +31,7 @@ RSpec.describe "PostgreSQL" do
       expect(subject.length).to eq 3
     end
 
-    context "input safety" do
+    describe "input safety" do
       before(:each) { TestClass.create(field: "foo") }
 
       it "sanitizes column values" do
