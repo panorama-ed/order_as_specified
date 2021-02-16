@@ -30,7 +30,7 @@ module OrderAsSpecified
             raise OrderAsSpecified::Error, "Range needs to be increasing"
           end
 
-          attribute.in(value)
+          attribute.between(value)
         elsif case_insensitive
           attribute.matches(value)
         else
