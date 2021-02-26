@@ -21,8 +21,6 @@ module OrderAsSpecified
     node = Arel::Nodes::Case.new
 
     params[:values].each_with_index do |value, index|
-      raise OrderAsSpecified::Error, "Cannot order by `nil`" if value.nil?
-
       attribute = table[params[:attribute]]
       condition =
         if value.is_a?(Range)

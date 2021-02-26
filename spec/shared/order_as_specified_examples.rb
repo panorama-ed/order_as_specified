@@ -58,8 +58,8 @@ RSpec.shared_examples ".order_as_specified" do
         end.shuffle
       end
 
-      it "raises an error" do
-        expect { subject }.to raise_error(OrderAsSpecified::Error)
+      it "returns results in the given order" do
+        expect(subject.map(&:id)).to eq shuffled_object_ids
       end
     end
   end

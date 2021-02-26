@@ -142,10 +142,17 @@ TestObject.order_as_specified(language: ["fr", "es"])
    ]>
 ```
 
-Note that if a `nil` value is passed in the ordering an error is raised, because
-databases do not have good or consistent support for ordering with `NULL` values
-in an arbitrary order, so we don't permit this behavior instead of allowing an
-unexpected result.
+The order can also include `nil` attributes:
+
+```ruby
+TestObject.order_as_specified(language: ["es", nil, "fr"])
+=> #<ActiveRecord::Relation [
+     #<TestObject id: 3, language: "es">,
+     #<TestObject id: 1, language: nil>,
+     #<TestObject id: 4, language: nil>,
+     #<TestObject id: 2, language: "fr">
+   ]>
+```
 
 ### `distinct_on`
 

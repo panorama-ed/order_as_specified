@@ -1,5 +1,10 @@
 # Unreleased (`master`)
 
+# 1.7
+
+This release adds support for `nil` values in the ordering list. Thanks to
+[yfulmes](https://github.com/yfulmes) for requesting this feature!
+
 # 1.6
 
 We are dropping official support for Ruby 2.3 and below, though they may
