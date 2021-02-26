@@ -8,5 +8,5 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gemspec
 
 group :development do
-  gem "panolint", github: "panorama-ed/panolint"
+  gem "panolint", github: "panorama-ed/panolint", branch: "main"
 end
