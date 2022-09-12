@@ -1,0 +1,54 @@
+name: Dependabot Pull Request
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, labeled]
+jobs:
+  build:
+    if: startsWith(github.head_ref, 'dependabot/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get unique committers
+        id: unique-committers
+        run: echo "::set-output name=committers::$(gh pr view $PR_URL --json commits --jq '[.commits.[] | .authors.[] | .login] | unique')"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.PANORAMA_BOT_RW_TOKEN}}
+      # The last step enables auto-merge in certain situations, but we don't want dependabots that require
+      # additional work to accidentally get merged before code review so we turn it off here.
+      - name: Disable auto-merge if there are commits from someone other than Dependabot
+        if: steps.unique-committers.outputs.committers != '["dependabot[bot]"]'
+        run: gh pr merge --disable-auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.PANORAMA_BOT_RW_TOKEN}}
+      - name: Add the Needs QA label to dependabots after any change by someone other than the dependabot bot
+        # Need to avoid the situation where someone removes the "Needs QA" label and we are adding it back.
+        if: ${{ github.actor != 'dependabot[bot]' && github.event.action != 'labeled' }}
+        run: gh pr edit "$PR_URL" --add-label "Needs QA"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.PANORAMA_BOT_RW_TOKEN}}
+      - name: Fetch Dependabot metadata
+        if: ${{ github.actor == 'dependabot[bot]' }}
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@v1.1.0
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Approve and merge Dependabot PRs for development dependencies
+        # Auto-merge the PR if either:
+        # a) it has the `development-dependencies` label, which we add for certain
+        #    categories of PRs (see `.github/dependabot.yml`), OR
+        # b) Dependabot has categorized it as a `direct:development` dependency,
+        #    meaning it's in the Gemfile in a `development` or `test` group
+        #
+        # Note that we also do nothing when the PR has already had auto-merge
+        # enabled, to prevent scenarios where this check runs many times (for
+        # instance, because removing `Needs QA` triggers another run, or because
+        # other PRs are merging and causing this to rebase and trigger another
+        # run) and then approves the PR many times, which is confusing and looks
+        # awkward.
+        if: ${{ github.actor == 'dependabot[bot]' && (!github.event.pull_request.auto_merge && (contains(github.event.pull_request.labels.*.name, 'development-dependencies') || steps.dependabot-metadata.outputs.dependency-type == 'direct:development')) }}
+        run: gh pr merge --auto --merge "$PR_URL" && gh pr edit "$PR_URL" --remove-label "Needs QA" && gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.PANORAMA_BOT_RW_TOKEN}}
